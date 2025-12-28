@@ -2,3 +2,16 @@
 GET http://localhost:8080/api/departments
 
 ###
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "admin123"
+}
+
+###
+GET http://localhost:8080/api/departments
+Headers:
+Authorization: Bearer <token>
