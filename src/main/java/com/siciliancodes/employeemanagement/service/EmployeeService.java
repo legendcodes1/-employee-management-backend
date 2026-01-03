@@ -7,15 +7,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.siciliancodes.employeemanagement.dto.EmployeeRequestDTO;
+import com.siciliancodes.employeemanagement.dto.EmployeeResponseDTO;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 public interface EmployeeService {
 
-    List<Employee> getAllEmployees();
+    List<EmployeeResponseDTO> getAllEmployees();
 
-    Employee getEmployeeById(UUID id);
+    EmployeeResponseDTO getEmployeeById(UUID id);
 
-    Employee createEmployee(EmployeeRequestDTO dto);
+    EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto);
 
-    Employee updateEmployee(UUID id, EmployeeRequestDTO dto);
+    EmployeeResponseDTO updateEmployee(UUID id, EmployeeRequestDTO dto);
 
     void deleteEmployee(UUID id);
 

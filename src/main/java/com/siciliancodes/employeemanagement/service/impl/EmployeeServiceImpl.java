@@ -1,6 +1,7 @@
 package com.siciliancodes.employeemanagement.service.impl;
 
 import com.siciliancodes.employeemanagement.dto.EmployeeRequestDTO;
+import com.siciliancodes.employeemanagement.dto.EmployeeResponseDTO;
 import com.siciliancodes.employeemanagement.entity.Department;
 import com.siciliancodes.employeemanagement.entity.Employee;
 import com.siciliancodes.employeemanagement.entity.Role;
@@ -31,18 +32,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeResponseDTO> getAllEmployees() {
+        return employeeRepository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
+
     @Override
-    public Employee getEmployeeById(UUID id) {
-        return employeeRepository.findById(id)
+    public EmployeeResponseDTO getEmployeeById(UUID id) {
+        Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        return toResponseDTO(employee);
     }
 
+
     @Override
-    public Employee createEmployee(EmployeeRequestDTO dto) {
+    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) {
 
         Department department = departmentRepository.findById(dto.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
@@ -57,13 +65,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setDepartment(department);
         employee.setRole(role);
 
-        return employeeRepository.save(employee);
+        Employee saved = employeeRepository.save(employee);
+        return toResponseDTO(saved);
+
     }
 
-    @Override
-    public Employee updateEmployee(UUID id, EmployeeRequestDTO dto) {
 
-        Employee existing = getEmployeeById(id);
+    @Override
+    public EmployeeResponseDTO updateEmployee(UUID id, EmployeeRequestDTO dto) {
+
+        Employee existing = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
         existing.setFirstName(dto.getFirstName());
         existing.setLastName(dto.getLastName());
@@ -79,8 +91,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                         .orElseThrow(() -> new RuntimeException("Role not found"))
         );
 
-        return employeeRepository.save(existing);
+        Employee updated = employeeRepository.save(existing);
+        return toResponseDTO(updated);
+
     }
+
 
     @Override
     public void deleteEmployee(UUID id) {
@@ -91,4 +106,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<Employee> getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email);
     }
+
+    private EmployeeResponseDTO toResponseDTO(Employee employee) {
+        return new EmployeeResponseDTO(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getEmail(),
+                employee.getStatus() != null ? employee.getStatus().name() : null,
+                employee.getDepartment() != null ? employee.getDepartment().getName() : null,
+                employee.getRole() != null ? employee.getRole().getName() : null
+        );
+    }
+
 }

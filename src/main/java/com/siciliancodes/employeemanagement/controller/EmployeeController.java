@@ -1,9 +1,7 @@
 package com.siciliancodes.employeemanagement.controller;
 
-import com.siciliancodes.employeemanagement.dto.EmployeeRequestDTO;
-import com.siciliancodes.employeemanagement.entity.Employee;
+import com.siciliancodes.employeemanagement.dto.EmployeeResponseDTO;
 import com.siciliancodes.employeemanagement.service.EmployeeService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,21 +17,15 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    // ✅ GET all employees
+    // ✅ USER: View all employees
     @GetMapping
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeResponseDTO> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
-    // ✅ POST create employee
-    @PostMapping
-    public Employee createEmployee(@Valid @RequestBody EmployeeRequestDTO dto) {
-        return employeeService.createEmployee(dto);
-    }
-
-    // (Optional but good)
+    // ✅ USER: View single employee
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable UUID id) {
+    public EmployeeResponseDTO getEmployeeById(@PathVariable UUID id) {
         return employeeService.getEmployeeById(id);
     }
 }
